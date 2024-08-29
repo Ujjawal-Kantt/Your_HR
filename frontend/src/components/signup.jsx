@@ -20,26 +20,37 @@ const ResponsiveForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/signup', {
-        method:'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          address: data.address,
-          city: data.city,
-          country: data.country,
-          state: data.state,
-          pincode: data.pincode,
-          password: data.password,
-          resume: resume
-        })
-    });
-    console.log(data);
-    alert('Form submitted');
-  }
+    
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('address', data.address);
+    formData.append('city', data.city);
+    formData.append('country', data.country);
+    formData.append('state', data.state);
+    formData.append('pincode', data.pincode);
+    formData.append('password', data.password);
+    if (resume) formData.append('resume', resume);
+
+    try {
+        const response = await fetch('http://localhost:5000/api/auth/signup', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+
+        console.log(data);
+        if (result.msg === 'success') {
+            alert('Form submitted');
+        } else {
+            alert('Form submission failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Form submission failed');
+    }
+};
 
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
