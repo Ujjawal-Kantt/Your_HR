@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ResponsiveForm = () => {
+  let navigate = useNavigate();
   const [data, setData] = useState({
     name: '',
     email: '',
@@ -43,6 +45,7 @@ const ResponsiveForm = () => {
         console.log(data);
         if (result.msg === 'success') {
             alert('Form submitted');
+            navigate('/login');
         } else {
             alert('Form submission failed');
         }

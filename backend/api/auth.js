@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const upload = require('../middleware/uploadmiddleware'); // Import upload middleware
 
+// Signup Route
 router.post('/signup', upload.single('resume'), async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -75,6 +76,7 @@ router.get('/resume/:email', async (req, res) => {
     }
 });
 
+// Login Route
 router.post('/login', [
     body('email', 'Please enter a valid email').isEmail(),
     body('password', 'Password is required').exists()
@@ -113,5 +115,37 @@ router.post('/login', [
     }
 });
 
+// Get User Details Route
+router.post('/user/details', async (req, res) => {
+    const { token } = req.body; // Extract token from the body
+
+    if (!token) {
+        return res.status(401).json({ msg: 'No token, authorization denied' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'helloworldxyzqweere'); // Verify token
+        const user = await User.findById(decoded.user.id); // Find user by ID
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        res.json({
+            user: {
+                email: user.email,
+                name: user.name,
+                country: user.country,
+                state: user.state,
+                city: user.city,
+                address: user.address,
+                pincode: user.pincode,
+                resume: user.resume ? user.resume.toString('base64') : null // Convert resume to base64 if available
+            }
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 module.exports = router;

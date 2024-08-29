@@ -1,25 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from './navbar';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  let navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/user');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+    const token = localStorage.getItem("token");
 
-    fetchUserData();
-  }, []);
+    if (token) {
+      setIsAuthenticated(true);
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/auth/user/details', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token })
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+
+          const data = await response.json();
+          setUser(data.user);
+          console.log(data);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+
+      fetchUserData();
+    } else {
+      setIsAuthenticated(false);
+      navigate("/");
+    }
+  }, [navigate]);
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+          <p className="text-gray-600">Redirecting...</p>
+        </div>
+      </>
+    );
+  }
 
   if (!user) {
     return (
@@ -32,7 +63,7 @@ const HomePage = () => {
     );
   }
 
-  const { name, email, address, city, country, state, pincode, resumeUrl } = user;
+  const { name, email, address, city, country, state, pincode, resume } = user;
 
   return (
     <>
@@ -61,9 +92,10 @@ const HomePage = () => {
               {/* Resume Display */}
               <div className="bg-white rounded-lg shadow-md p-4">
                 <h2 className="text-xl font-semibold mb-4">Resume</h2>
-                {resumeUrl ? (
+                {resume ? (
                   <a
-                    href={resumeUrl} // Direct URL to the resume PDF
+                    href={`data:application/pdf;base64,${resume}`} // Use base64 data URL for resume PDF
+                    download="resume.pdf" // Suggest a filename for download
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700"

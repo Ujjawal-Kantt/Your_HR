@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from './navbar';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+  let navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
   // Handle Value Change
@@ -20,7 +22,16 @@ const LoginForm = () => {
       },
       body: JSON.stringify({ email: formData.email, password: formData.password }),
     });
-    alert('Form submitted');
+    const json = await response.json();
+    if(json.msg==='success'){
+      localStorage.setItem('token', json.token);
+      alert('Form submitted');
+      navigate("/profile");
+    }
+    else{
+      console.log('Invalid Credentials');
+      alert('Invalid Credentials');
+    }
   };
 
   return (
