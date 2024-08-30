@@ -17,11 +17,15 @@ const ResponsiveForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [resume, setResume] = useState(null); // To handle resume upload
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
 
   const togglePassword = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Show loading bar
+
     
     const formData = new FormData();
     formData.append('name', data.name);
@@ -41,18 +45,18 @@ const ResponsiveForm = () => {
         });
         
         const result = await response.json();
-
-        console.log(data);
         if (result.msg === 'success') {
-            alert('Form submitted');
-            navigate('/login');
+          alert('Form submitted');
+          navigate('/login');
         } else {
-            alert('Form submission failed');
+          alert('Form submission failed');
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Error:', error);
         alert('Form submission failed');
-    }
+      } finally {
+        setIsLoading(false); // Hide loading bar
+      }
 };
 
   const onChange = (e) => {
