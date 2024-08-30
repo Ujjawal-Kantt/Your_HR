@@ -1,6 +1,7 @@
 # Your-HR
 
 Your-HR is a web-based platform designed to simplify the management of personal data and documents for users. This project allows users to register, upload resumes, and manage their profiles securely.
+# Due to the backend being hosted on Render's free tier, initial login may experience a slight delay as the server restarts after periods of inactivity.
 
 ## Table of Contents
 
