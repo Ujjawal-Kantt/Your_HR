@@ -47,14 +47,14 @@ const ResponsiveForm = () => {
         
         const result = await response.json();
         if (result.msg === 'success') {
-          alert('Form submitted');
+          alert('Successfully registered. Go to login page to login');
           navigate('/login');
         } else {
           alert('Form submission failed');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Form submission failed');
+        alert('Registration failed');
       } finally {
         setIsLoading(false); // Hide loading bar
       }

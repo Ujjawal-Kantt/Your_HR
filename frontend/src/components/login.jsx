@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
-import Navbar from './navbar';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import Navbar from "./navbar";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import loadingGif from './loading.gif';
+
 
 const LoginForm = () => {
   let navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
   // Handle Value Change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,23 +18,29 @@ const LoginForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true); // Show loading bar
     e.preventDefault();
-    const response = await fetch('https://your-hr-1.onrender.com/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: formData.email, password: formData.password }),
-    });
+    const response = await fetch(
+      "https://your-hr-1.onrender.com/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      }
+    );
     const json = await response.json();
-    if(json.msg==='success'){
-      localStorage.setItem('token', json.token);
-      alert('Form submitted');
+    if (json.msg === "success") {
+      localStorage.setItem("token", json.token);
+      // alert("Form submitted");
       navigate("/profile");
-    }
-    else{
-      console.log('Invalid Credentials');
-      alert('Invalid Credentials');
+    } else {
+      console.log("Invalid Credentials");
+      alert("Invalid Credentials");
     }
   };
 
@@ -39,9 +49,7 @@ const LoginForm = () => {
       <Navbar />
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
-          ></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
             <div className="max-w-md mx-auto">
               <div>
@@ -69,7 +77,11 @@ const LoginForm = () => {
                       >
                         Email Address
                       </label>
-                      {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.email}
+                        </p>
+                      )}
                     </div>
                     <div className="relative">
                       <input
@@ -88,14 +100,27 @@ const LoginForm = () => {
                       >
                         Password
                       </label>
-                      {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                      {errors.password && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.password}
+                        </p>
+                      )}
                     </div>
                     <div className="relative">
                       <button
                         type="submit"
                         className="bg-blue-500 text-white rounded-md px-2 py-1"
+                        disabled={isLoading} // Disable button while loading
                       >
-                        Submit
+                        {isLoading ? (
+                          <img
+                            src={loadingGif}
+                            alt="Loading..."
+                            className="h-6 w-6 mx-auto"
+                          />
+                        ) : (
+                          "Submit"
+                        )}{" "}
                       </button>
                     </div>
                   </div>
@@ -103,7 +128,7 @@ const LoginForm = () => {
               </form>
               <div className="text-center mt-6">
                 <p className="text-gray-600">
-                  Don’t have an account?{' '}
+                  Don’t have an account?{" "}
                   <Link
                     to="/signup"
                     className="text-blue-500 hover:text-blue-700 font-semibold"
