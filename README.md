@@ -42,7 +42,7 @@ The application follows a typical three-tier architecture:
 
 ### Architecture Diagram
 
-![Architecture Diagram](path/to/architecture-diagram.png)
+![Architecture Diagram](https://github.com/Ujjawal-Kantt/Your_HR/blob/main/yourhr%20(1).pdf)
 
 ### Component Overview
 
