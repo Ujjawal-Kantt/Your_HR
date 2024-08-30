@@ -14,7 +14,7 @@ const HomePage = () => {
       setIsAuthenticated(true);
       const fetchUserData = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/auth/user/details', {
+          const response = await fetch('https://your-hr-1.onrender.com/api/auth/user/details', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
