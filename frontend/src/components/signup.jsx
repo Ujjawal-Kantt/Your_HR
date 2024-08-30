@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import loadingGif from './loading.gif';
 
 const ResponsiveForm = () => {
   let navigate = useNavigate();
@@ -374,9 +375,21 @@ const ResponsiveForm = () => {
 
 
                   <div className="md:col-span-5 text-right">
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                      Submit
-                    </button>
+                  <button
+                        type="submit"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        disabled={isLoading} // Disable button while loading
+                      >
+                        {isLoading ? (
+                          <img
+                            src={loadingGif}
+                            alt="Loading..."
+                            className="h-6 w-6 mx-auto"
+                          />
+                        ) : (
+                          "Submit"
+                        )}
+                      </button>
                   </div>
                 </div>
               </div>
